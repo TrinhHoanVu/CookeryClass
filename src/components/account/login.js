@@ -1,35 +1,26 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../../css/login.css";
+import "../../css/account/login.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setMessage("Email and password cannot be empty.");
-      return;
-    }
     try {
       const response = await axios.post("http://localhost:5231/api/Account/login", {
         email,
         password,
       });
-
-      if (response.data) {
-        setMessage("Login successful!");
-        // Redirect to a new page (e.g., dashboard)
-        // window.location.href = "/dashboard"; // Or use React Router
-      } else {
-        setMessage("Invalid email or password.");
-      }
+      setMessage("Login successful!");
+      // Redirect to dashboard
+      navigate("/hompage");
     } catch (error) {
-      setMessage(
-        error.response?.data || "An error occurred. Please try again."
-      );
+      setMessage(error.response?.data || "An error occurred. Please try again.");
     }
   };
 
@@ -64,6 +55,20 @@ const Login = () => {
           </button>
           <p className="message">{message}</p>
         </form>
+        <div className="extra-options">
+          <p>
+            Forgot your password?{" "}
+            <span className="link" onClick={() => navigate("/forgot-password")}>
+              Click here
+            </span>
+          </p>
+          <p>
+            Don't have an account?{" "}
+            <span className="link" onClick={() => navigate("/sign-up")}>
+              Sign up
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   );
