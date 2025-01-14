@@ -1,26 +1,35 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import Login from "./components/account/login";
-import ForgotPassword from "./components/account/forgotpassword";
-import SignUp from "./components/account/signup";
-import ResetPassword from "./components/account/resetpassword";
-import VerifyCode from "./components/account/confirmvcode";
+import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { DataContext } from "./context/DatabaseContext";
+import { publicRouter, privateRouter } from "./configs/routerConfig";
 
 
 function App() {
+  const { tokenInfor } = useContext(DataContext);
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/confirmcode" element={<VerifyCode />} />
-          <Route path="/resetpassword" element={<ResetPassword />} />
-        </Routes>
-      </div>
-    </Router>
+    <div className="container">
+      <Routes>
+        {publicRouter.map((item, index) => {
+          return <Route key={index} path={item.path} element={item.element} />;
+        })}
+        {privateRouter.map((item, index) => (
+          <Route
+            key={index}
+            path={item.roles.includes(tokenInfor?.role) ? item.path : "*"}
+            element={
+              item.roles.includes(tokenInfor?.role) ? (
+                item.element
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+        ))}
+      </Routes>
+    </div>
   );
 }
 

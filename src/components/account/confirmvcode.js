@@ -13,11 +13,11 @@ const VerifyCode = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:5231/api/Account/VerifyCode", // Đường dẫn API
-                { verifyCode: verificationCode }, // Dữ liệu gửi đi
+                "http://localhost:5231/api/Account/VerifyCode", 
+                { verifyCode: verificationCode }, 
                 {
                     headers: {
-                        "Content-Type": "application/json", // Loại dữ liệu gửi đi
+                        "Content-Type": "application/json",
                     },
                     withCredentials: true
                 }

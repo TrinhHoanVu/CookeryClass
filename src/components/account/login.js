@@ -1,28 +1,34 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import "../../css/account/login.css";
+import { DataContext } from "../../context/DatabaseContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const { tokenInfor, setTokenInfor } = useContext(DataContext)
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  async function handleLogin(e) {
     e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:5231/api/Account/login", {
-        email,
-        password,
-      });
-      setMessage("Login successful!");
-      // Redirect to dashboard
-      navigate("/hompage");
-    } catch (error) {
-      setMessage(error.response?.data || "An error occurred. Please try again.");
-    }
-  };
+    await axios.post("http://localhost:5231/api/Account/login", { email, password })
+      .then(res => {
+        if (res.status === 200) {
+          console.log("res: ", res);
+
+          localStorage.setItem("inforToken", JSON.stringify(res.data));
+          let tokenDecode = jwtDecode(res.data.token);
+          console.log("tokenDecode: ", tokenDecode);
+          setTokenInfor(tokenDecode)
+          if (tokenDecode.role === "SUPERADMIN" || tokenDecode.role === "ADMIN" || tokenDecode.role === "USER") {
+            navigate("/accountprofile")
+          }
+        }
+      })
+      .catch(err => console.log(err))
+  }
 
   return (
     <div className="login-container">
@@ -53,20 +59,13 @@ const Login = () => {
           <button type="submit" className="login-button">
             Login
           </button>
-          <p className="message">{message}</p>
         </form>
         <div className="extra-options">
-          <p>
-            Forgot your password?{" "}
-            <span className="link" onClick={() => navigate("/forgot-password")}>
-              Click here
-            </span>
+          <p onClick={() => navigate("/forgot-password")}>
+            Forgot your password?
           </p>
-          <p>
-            Don't have an account?{" "}
-            <span className="link" onClick={() => navigate("/sign-up")}>
-              Sign up
-            </span>
+          <p onClick={() => navigate("/sign-up")}>
+            Don't have an account?
           </p>
         </div>
       </div>
