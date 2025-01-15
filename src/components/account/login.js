@@ -9,6 +9,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { tokenInfor, setTokenInfor } = useContext(DataContext)
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   async function handleLogin(e) {
@@ -27,7 +28,11 @@ const Login = () => {
           }
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        const errMes = err.response?.data?.message
+        console.log(errMes)
+        setErrorMessage(errMes)
+      })
   }
 
   return (
@@ -56,6 +61,8 @@ const Login = () => {
               required
             />
           </div>
+          {errorMessage && <p className="message">{errorMessage}</p>}
+
           <button type="submit" className="login-button">
             Login
           </button>

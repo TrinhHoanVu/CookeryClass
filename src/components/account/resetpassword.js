@@ -62,10 +62,10 @@ const ResetPassword = () => {
                             required
                         />
                     </div>
+                    {message && <p className="message">{message}</p>}
                     <button type="submit" className="submit-button">
                         Reset Password
                     </button>
-                    {message && <p className="message">{message}</p>}
                 </form>
             </div>
         </div>

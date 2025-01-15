@@ -13,8 +13,8 @@ const VerifyCode = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:5231/api/Account/VerifyCode", 
-                { verifyCode: verificationCode }, 
+                "http://localhost:5231/api/Account/VerifyCode",
+                { verifyCode: verificationCode },
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -45,10 +45,10 @@ const VerifyCode = () => {
                             required
                         />
                     </div>
+                    <span className="notiMessageConfirm">We have sent a verification code to your email. This code is valid for 2 minutes</span>
                     <button type="submit" className="submit-button">
                         Verify
                     </button>
-                    {/* Hiển thị thông báo */}
                     {message && <p className="message">{message}</p>}
                 </form>
             </div>
