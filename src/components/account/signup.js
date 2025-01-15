@@ -29,6 +29,7 @@ const SignUp = () => {
         <div className="sign-up-container">
             <div className="sign-up-box">
                 <h1>Sign Up</h1>
+                <p className="subtitle">Welcome to JamesThew's Kitchen!</p>
                 <form onSubmit={handleSignUp}>
                     <div className="form-group">
                         <label>Name:</label>
