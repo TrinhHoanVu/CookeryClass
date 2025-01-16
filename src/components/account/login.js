@@ -24,7 +24,7 @@ const Login = () => {
           console.log("tokenDecode: ", tokenDecode);
           setTokenInfor(tokenDecode)
           if (tokenDecode.role === "SUPERADMIN" || tokenDecode.role === "ADMIN" || tokenDecode.role === "USER") {
-            navigate("/accountprofile")
+            navigate("/management", { state: { isProfile: true, isContest: false, isRecipe: false, isTip: false } });
           }
         }
       })

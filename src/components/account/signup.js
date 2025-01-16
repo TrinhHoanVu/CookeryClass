@@ -12,15 +12,19 @@ const SignUp = () => {
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5231/api/Account", {
+            console.log(email)
+            console.log(password)
+            console.log(name)
+            const response = await axios.post("http://localhost:5231/api/Account/register", {
                 email,
                 password,
                 name,
+                cfPassword
             });
             setMessage("Sign up successful! You can now log in.");
         } catch (error) {
             setMessage(
-                error.response?.data || "An error occurred. Please try again."
+                error.response?.data?.message || "An error occurred. Please try again."
             );
         }
     };
