@@ -2,10 +2,10 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import { DataContext } from "../../context/DatabaseContext";
 import { Country, State, City } from 'country-state-city';
-import "../../css/account/account-profile.css"
+import "../../css/management/account-profile.css"
 
 function AccountDetail() {
-    const { tokenInfor } = useContext(DataContext);
+    const { tokenInfor, setTokenInfor } = useContext(DataContext);
     const [name, setName] = useState(tokenInfor?.unique_name);
     const [password, setPassword] = useState("");
     const [address, setAddress] = useState(tokenInfor?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/streetaddress"]);
@@ -92,18 +92,22 @@ function AccountDetail() {
 
     async function handleUpdateProfile(e) {
         e.preventDefault();
-        console.log(selectedCountry.name)
-        console.log(selectedState.name)
-        console.log(selectedCity.name)
-        console.log(email)
+
         await axios.put("http://localhost:5231/api/Account/updateProfile", { email, name, address, phoneNumber })
             .then(res => {
                 if (res.status === 200) {
-                   
+                    console.log(address)
+                    tokenInfor["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/streetaddress"] = address
+                    tokenInfor["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mobilephone"] = phoneNumber
+                    
+                    tokenInfor["unique_name"] = name
+                    setTokenInfor(tokenInfor)
+                    console.log(tokenInfor["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mobilephone"])
+
+                    alert("Profile updated successfully!");
                 }
             })
             .catch(err => console.log(err))
-
     }
     return (
         <div className="profile-container">

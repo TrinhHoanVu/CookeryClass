@@ -5,7 +5,7 @@ import { Navigate } from "react-router-dom";
 import { useContext } from "react";
 import { DataContext } from "./context/DatabaseContext";
 import { publicRouter, privateRouter } from "./configs/routerConfig";
-
+import './index.css';
 
 function App() {
   const { tokenInfor } = useContext(DataContext);
