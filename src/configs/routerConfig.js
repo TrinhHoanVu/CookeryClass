@@ -9,6 +9,7 @@ import Management from "../components/management/management"
 import AccountDetail from "../components/management/accountDetail"
 import PublicContest from "../components/contest/public-contest"
 import ContestDetail from "../components/contest/contest-detail"
+import PaymentConfirmation from "../components/account/payment-success"
 
 const publicRouter = [
     {
@@ -42,6 +43,10 @@ const publicRouter = [
     {
         path: "/contest/:id",
         element: <ContestDetail />
+    },
+    {
+        path: "/success",
+        element: <PaymentConfirmation />
     }
 ]
 
@@ -50,12 +55,14 @@ const privateRouter = [
     {
         path: "/privatecontest",
         element: <PrivateContest />,
-        roles: ["USER", "ADMIN", "SUPERADMIN"]
+        roles: ["USER", "ADMIN", "SUPERADMIN"],
+        status: true
     },
     {
         path: "/management",
         element: <Management defaultTab="profile" />,
-        roles: ["ADMIN", "SUPERADMIN"]
+        roles: ["ADMIN", "SUPERADMIN"],
+        status: true
     }
 ]
 export {

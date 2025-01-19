@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Editor, EditorState, ContentState, convertToRaw } from "draft-js";
+import { Editor, EditorState, ContentState } from "draft-js";
 import "draft-js/dist/Draft.css";
 import axios from "axios";
 
@@ -30,7 +30,7 @@ function ContestEditForm({ idContest, onClose, reloadContests }) {
             setPrice(contest.price);
             setStartDate(contest.startDate);
             setEndDate(contest.endDate);
-            setStatus(contest.status)
+            setStatus(contest.status);
 
             if (contest.description) {
                 const contentState = ContentState.createFromText(contest.description);
@@ -52,22 +52,20 @@ function ContestEditForm({ idContest, onClose, reloadContests }) {
     const handleStartDateChange = (value) => {
         setStartDate(value);
 
-        // Validate ngay khi thay đổi
         const dateErrors = validateDate(value, endDate);
         setErrors((prevErrors) => ({
             ...prevErrors,
-            startDate: dateErrors.startDate || null, // Chỉ cập nhật lỗi startDate
+            startDate: dateErrors.startDate || null,
         }));
     };
 
     const handleEndDateChange = (value) => {
         setEndDate(value);
 
-        // Validate ngay khi thay đổi
         const dateErrors = validateDate(startDate, value);
         setErrors((prevErrors) => ({
             ...prevErrors,
-            endDate: dateErrors.endDate || null, // Chỉ cập nhật lỗi endDate
+            endDate: dateErrors.endDate || null,
         }));
     };
 
@@ -110,19 +108,25 @@ function ContestEditForm({ idContest, onClose, reloadContests }) {
         if (start < now) errors.startDate = "Start date must be in the future.";
         if (end < now) errors.endDate = "End date must be in the future.";
         if (start >= end) errors.endDate = "End date must be after the start date.";
-        console.log("err" + errors.startDate)
         return errors;
     };
 
-    const handleSave = async () => {
+    const handleSave = async (e) => {
         const validationErrors = validate();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
         }
-
+        e.preventDefault();
         try {
+
             const descriptionText = description.getCurrentContent().getPlainText();
+
+            // if (status === 'HAPPENING') {
+            //     await axios.post("http://localhost:5231/api/Contest/sendNewContest", {
+            //         name, descriptionText, startDate, endDate, status
+            //     })
+            // }
 
             await axios.put(`http://localhost:5231/api/Contest/update/${idContest}`, {
                 name,
@@ -139,7 +143,7 @@ function ContestEditForm({ idContest, onClose, reloadContests }) {
                 await reloadContests();
             }
             if (onClose) {
-                onClose(); 
+                onClose();
             }
         } catch (err) {
             alert("Failed to update contest. Please try again.");
@@ -155,88 +159,98 @@ function ContestEditForm({ idContest, onClose, reloadContests }) {
     if (error) return <p>{error}</p>;
 
     return (
-        <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
-            <h2>Edit Contest</h2>
+        <div style={{
+            maxWidth: "1000px", minWidth: "1000px", margin: "0 auto", padding: "10px", display: "flex",
+            justifyContent: "center", gap: "20px"
+        }}>
+            <div style={{ width: "500px" }}>
+                <div style={{ marginBottom: "45px", height: "50px", }}>
+                    <label htmlFor="name">Name:</label>
+                    <input
+                        type="text"
+                        id="name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        style={{ width: "100%", padding: "8px", margin: "5px 0" }}
+                    />
+                    {errors.name && <span style={{ color: "red" }}>{errors.name}</span>}
+                </div>
 
-            <div style={{ marginBottom: "15px" }}>
-                <label htmlFor="name">Name:</label>
-                <input
-                    type="text"
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    style={{ width: "100%", padding: "8px", margin: "5px 0" }}
-                />
-                {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
+                <div style={{ marginBottom: "45px", height: "50px" }}>
+                    <label htmlFor="price">Price ($):</label>
+                    <input
+                        type="number"
+                        id="price"
+                        value={price}
+                        onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
+                        style={{ width: "100%", padding: "8px", margin: "5px 0" }}
+                    />
+                    {errors.price && <span style={{ color: "red" }}>{errors.price}</span>}
+                </div>
+
+                <div style={{ marginBottom: "45px", height: "50px" }}>
+                    <label htmlFor="startDate">Start Date:</label>
+                    <input
+                        type="date"
+                        id="startDate"
+                        value={formatDate(startDate)}
+                        onChange={(e) => handleStartDateChange(e.target.value)}
+                        style={{ width: "100%", padding: "8px", margin: "5px 0" }}
+                    />
+                    {errors.startDate && <span style={{ color: "red" }}>{errors.startDate}</span>}
+                </div>
+
+                <div style={{ marginBottom: "45px", height: "50px" }}>
+                    <label htmlFor="endDate">End Date:</label>
+                    <input
+                        type="date"
+                        id="endDate"
+                        value={formatDate(endDate)}
+                        onChange={(e) => handleEndDateChange(e.target.value)}
+                        style={{ width: "100%", padding: "8px", margin: "5px 0" }}
+                    />
+                    {errors.endDate && <span style={{ color: "red" }}>{errors.endDate}</span>}
+                </div>
+
+                <div style={{ marginBottom: "45px", height: "50px" }}>
+                    <label htmlFor="status">Status:</label>
+                    <select
+                        id="status"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                        style={{ width: "100%", padding: "8px", margin: "5px 0" }}
+                    >
+                        <option value="NOT YET">NOT YET</option>
+                        <option value="HAPPENING">HAPPENING</option>
+                        <option value="FINISHED">FINISHED</option>
+                    </select>
+                    {errors.status && <span style={{ color: "red" }}>{errors.status}</span>}
+                </div>
             </div>
 
-            <div style={{ marginBottom: "15px" }}>
+            <div style={{
+                marginBottom: "15px", display: "flex",
+                justifyContent: "center", flexDirection: "column", gap: "20px"
+            }}>
                 <label htmlFor="description">Description:</label>
-                <div style={{ border: "1px solid #ddd", minHeight: "150px", padding: "10px" }} onClick={focus}>
+                <div style={{
+                    border: "1px solid #ddd", height: "305px", padding: "10px", width: "500px"
+                }} onClick={focus}>
                     <Editor
                         ref={editorRef}
                         editorState={description}
                         onChange={(editorState) => setDescription(editorState)}
                     />
                 </div>
-                {errors.description && <p style={{ color: "red" }}>{errors.description}</p>}
+                {errors.description && <span style={{ color: "red" }}>{errors.description}</span>}
+
+                <button
+                    onClick={handleSave}
+                    style={{ padding: "10px 20px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "4px" }}
+                >
+                    Save
+                </button>
             </div>
-
-            <div style={{ marginBottom: "15px" }}>
-                <label htmlFor="price">Price ($):</label>
-                <input
-                    type="number"
-                    id="price"
-                    value={price}
-                    onChange={(e) => setPrice(parseFloat(e.target.value) || 0)}
-                    style={{ width: "100%", padding: "8px", margin: "5px 0" }}
-                />
-                {errors.price && <p style={{ color: "red" }}>{errors.price}</p>}
-            </div>
-
-            <div style={{ marginBottom: "15px" }}>
-                <label htmlFor="startDate">Start Date:</label>
-                <input
-                    type="date"
-                    id="startDate"
-                    value={formatDate(startDate)}
-                    onChange={(e) => handleStartDateChange(e.target.value)}
-                    style={{ width: "100%", padding: "8px", margin: "5px 0" }}
-                />
-                {errors.startDate && <p style={{ color: "red" }}>{errors.startDate}</p>}
-            </div>
-
-            <div style={{ marginBottom: "15px" }}>
-                <label htmlFor="endDate">End Date:</label>
-                <input
-                    type="date"
-                    id="endDate"
-                    value={formatDate(endDate)}
-                    onChange={(e) => handleEndDateChange(e.target.value)}
-                    style={{ width: "100%", padding: "8px", margin: "5px 0" }}
-                />
-                {errors.endDate && <p style={{ color: "red" }}>{errors.endDate}</p>}
-            </div>
-
-
-            <div style={{ marginBottom: "15px" }}>
-                <label htmlFor="status">Status</label>
-                <input
-                    type="text"
-                    id="status"
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    style={{ width: "100%", padding: "8px", margin: "5px 0" }}
-                />
-                {errors.endDate && <p style={{ color: "red" }}>{errors.endDate}</p>}
-            </div>
-
-            <button
-                onClick={handleSave}
-                style={{ padding: "10px 20px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "4px" }}
-            >
-                Save
-            </button>
         </div>
     );
 }

@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "../../css/account/verifycode.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const VerifyCode = () => {
     const [verificationCode, setVerificationCode] = useState("");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
+    const location = useLocation();
+    const { linkNavigate, name, email, password } = location.state || {};
 
     const handleVerifyCode = async (e) => {
         e.preventDefault();
-
+        console.log(linkNavigate)
         try {
-            const response = await axios.post(
+            await axios.post(
                 "http://localhost:5231/api/Account/VerifyCode",
                 { verifyCode: verificationCode },
                 {
@@ -22,8 +24,16 @@ const VerifyCode = () => {
                     withCredentials: true
                 }
             );
-
-            navigate("/resetpassword");
+            if (linkNavigate === "/login") {
+                try {
+                    await axios.post("http://localhost:5231/api/Account/register", { email: email, name: name, password: password, cfPassword: password })
+                } catch (error) {
+                    const errorMessage = error.response?.data?.message || "Verification failed. Please try again.";
+                    setMessage(errorMessage)
+                }
+            }
+            console.log(linkNavigate)
+            navigate(linkNavigate);
         } catch (error) {
             const errorMessage = error.response?.data?.message || "Verification failed. Please try again.";
             setMessage(errorMessage);

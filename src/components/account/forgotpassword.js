@@ -12,18 +12,18 @@ const ForgotPassword = () => {
     const handleForgotPassword = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(
+            await axios.post(
                 "http://localhost:5231/api/Account/RequestResetPassword",
                 { email },
                 {
                     headers: {
-                        "Content-Type": "application/json", // Specify JSON content type
+                        "Content-Type": "application/json",
                     },
                     withCredentials: true,
                 }
             );
             console.log("Sending email:", email);
-            navigate("/confirmcode")
+            navigate("/confirmcode", { state: { linkNavigate: "/resetpassword" } })
         } catch (error) {
             const errorMessage = error.response?.data?.message || "An error occurred. Please try again.";
             setMessage(errorMessage);
