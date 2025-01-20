@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Routes, Route, useLocation } from "react-router-dom"; // <-- Import useLocation here
+import { Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import { Navigate } from "react-router-dom";
 import { DataContext } from "./context/DatabaseContext";
@@ -12,13 +12,16 @@ import ContactInfo from "./components/Contact/ContactInfo";
 
 function App() {
   const { tokenInfor } = useContext(DataContext);
-  const location = useLocation(); // <-- useLocation here
+  const location = useLocation();
+
+  // Kiểm tra nếu đường dẫn là "/home" hoặc "/recipe"
+  const showNavbarAndContact = location.pathname === "/" || location.pathname === "/recipe";
 
   return (
     <div className="container">
       <SidebarProvider>
-        {/* Conditionally render Navbar only if the current path is not /login */}
-        {location.pathname !== "/login" && <Navbar />}
+        {/* Render Navbar chỉ khi showNavbarAndContact là true */}
+        {showNavbarAndContact && <Navbar />}
         
         <Routes>
           {publicRouter.map((item, index) => {
@@ -39,8 +42,8 @@ function App() {
           ))}
         </Routes>
 
-        {/* Conditionally render ContactInfo only if the current path is not /login */}
-        {location.pathname !== "/login" && <ContactInfo />}
+        {/* Render ContactInfo chỉ khi showNavbarAndContact là true */}
+        {showNavbarAndContact && <ContactInfo />}
       </SidebarProvider>
     </div>
   );
