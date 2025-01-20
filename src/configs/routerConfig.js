@@ -9,6 +9,7 @@ import Management from "../components/management/management"
 import AccountDetail from "../components/management/accountDetail"
 import PublicContest from "../components/contest/public-contest"
 import ContestDetail from "../components/contest/contest-detail"
+import PaymentSuccess from "../components/account/paymen-success"
 
 const publicRouter = [
     {
@@ -42,6 +43,10 @@ const publicRouter = [
     {
         path: "/contest/:id",
         element: <ContestDetail />
+    },
+    {
+        path: "success",
+        element: <PaymentSuccess />
     }
 ]
 

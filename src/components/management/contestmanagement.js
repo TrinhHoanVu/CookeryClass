@@ -9,7 +9,7 @@ function ContestManagement() {
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
     const [total, setTotal] = useState(0);
-    const [attendeesCount, setAttendeesCount] = useState({}); // Lưu trữ số lượng attendee theo mỗi contest
+    const [attendeesCount, setAttendeesCount] = useState({});
     const pageSize = 10;
 
     const fetchContests = async () => {
@@ -118,7 +118,7 @@ function ContestManagement() {
                                         </td>
                                         <td>{attendeesCount[contest.idContest] || 0}</td>
                                         <td className={`status ${contest.status ? "active" : "inactive"}`}>
-                                            {contest.status ? "Happening" : "Finished"}
+                                            {contest.status}
                                         </td>
                                         <td className="actions">
                                             <button
