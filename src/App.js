@@ -9,13 +9,15 @@ import Header from "./components/Header/Header";
 import { SidebarProvider } from "./context/sidebarContext";
 import Navbar from "./components/Header/Navbar";
 import ContactInfo from "./components/Contact/ContactInfo";
+import Meal from "./components/Recipe/Meal";
+import Recipe from "./components/Recipe/Recipe";
 
 function App() {
   const { tokenInfor } = useContext(DataContext);
   const location = useLocation();
 
   // Kiểm tra nếu đường dẫn là "/home" hoặc "/recipe"
-  const showNavbarAndContact = location.pathname === "/" || location.pathname === "/recipe";
+  const showNavbarAndContact = location.pathname === "/" || location.pathname === "/recipe"|| location.pathname === "/:recipeId";
 
   return (
     <div className="container">
@@ -40,9 +42,9 @@ function App() {
               }
             />
           ))}
+          <Route path="/recipe" element={<Meal />} />
+          <Route path="/:recipeId" element={<Recipe />} />
         </Routes>
-
-        {/* Render ContactInfo chỉ khi showNavbarAndContact là true */}
         {showNavbarAndContact && <ContactInfo />}
       </SidebarProvider>
     </div>
