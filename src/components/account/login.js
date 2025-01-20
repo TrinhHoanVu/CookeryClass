@@ -22,9 +22,13 @@ const Login = () => {
           localStorage.setItem("inforToken", JSON.stringify(res.data));
           let tokenDecode = jwtDecode(res.data.token);
           console.log("tokenDecode: ", tokenDecode);
+          console.log(tokenDecode.role)
           setTokenInfor(tokenDecode)
-          if (tokenDecode.role === "SUPERADMIN" || tokenDecode.role === "ADMIN" || tokenDecode.role === "USER") {
+          const allowedRoles = ["SUPERADMIN", "ADMIN"];
+          if (allowedRoles.includes(tokenDecode.role)) {
             navigate("/management", { state: { isProfile: true, isContest: false, isRecipe: false, isTip: false } });
+          } else {
+            navigate("/")
           }
         }
       })

@@ -11,8 +11,6 @@ function ContestManagement() {
     const [page, setPage] = useState(1);
     const [total, setTotal] = useState(0);
     const [attendeesCount, setAttendeesCount] = useState({});
-    const [contestEdit, setContestEdit] = useState(false);
-    const [idContest, setIdContest] = useState(0);
     const pageSize = 10;
 
     const fetchContests = async () => {
@@ -128,6 +126,7 @@ function ContestManagement() {
                                         </td>
                                         <td>{attendeesCount[contest.idContest] || 0}</td>
                                         <td className={`status ${contest.status ? "active" : "inactive"}`}>
+                                            {contest.status}
                                             {contest.status}
                                         </td>
                                         <td className="actions">
