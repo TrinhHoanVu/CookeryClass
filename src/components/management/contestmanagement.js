@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../css/management/contest-magenement.css";
 import { Link } from "react-router-dom"
+import ContestEditForm from "./contest-edit";
 
 function ContestManagement() {
     const [contests, setContests] = useState([]);
@@ -26,6 +27,9 @@ function ContestManagement() {
             setError("Failed to load contests. Please try again.");
             setLoading(false);
         }
+    }; const reloadContests = async () => {
+        setLoading(true);
+        await fetchContests();
     };
 
     const fetchAttendeesCount = async (contestId) => {
@@ -55,16 +59,18 @@ function ContestManagement() {
         });
     }, [contests]);
 
-    const handleEdit = (contestId, attendeesCount) => {
-        if (attendeesCount > 0)
-            alert(`This contest has already attendees`);
-        console.log(attendeesCount)
+    const handleEdit = (contestId, attendeesCount, status) => {
+        if (status.toUpperCase() === "NOT YET") {
+            setIdContest(contestId)
+            setContestEdit(true)
+        }
+        else {
+            alert(`This contest has already begun`);
+        }
     };
 
-    const handleDelete = async (contestId, attendeesCount) => {
-        if (attendeesCount > 0) {
-            alert(`This contest has already attendees`);
-        } else {
+    const handleDelete = async (contestId, attendeesCount, status) => {
+        if (status.toUpperCase() === "NOT YET") {
             if (window.confirm("Are you sure you want to delete this contest?")) {
                 try {
                     await axios.delete(`http://localhost:5231/api/Contest/delete/${contestId}`, { params: { id: contestId } });
@@ -74,6 +80,8 @@ function ContestManagement() {
                     alert("Failed to delete contest. Please try again.");
                 }
             }
+        } else {
+            alert(`This contest has already begun`);
         }
     };
 
@@ -119,17 +127,18 @@ function ContestManagement() {
                                         <td>{attendeesCount[contest.idContest] || 0}</td>
                                         <td className={`status ${contest.status ? "active" : "inactive"}`}>
                                             {contest.status}
+                                            {contest.status}
                                         </td>
                                         <td className="actions">
                                             <button
                                                 className="contest-management-icon-button"
-                                                onClick={() => handleEdit(contest.idContest, attendeesCount[contest.idContest])}
+                                                onClick={() => handleEdit(contest.idContest, attendeesCount[contest.idContest], contest.status)}
                                             >
                                                 Edit
                                             </button>
                                             <button
                                                 className="contest-management-icon-button delete"
-                                                onClick={() => handleDelete(contest.idContest, attendeesCount[contest.idContest])}
+                                                onClick={() => handleDelete(contest.idContest, attendeesCount[contest.idContest], contest.status)}
                                             >
                                                 Delete
                                             </button>
@@ -163,6 +172,31 @@ function ContestManagement() {
                     </>
                 )}
             </div>
+            {contestEdit && (
+                <div className="edit-modal-overlay">
+                    <div className="edit-modal">
+                        {contestEdit && (
+                            <div className="edit-modal-overlay">
+                                <div className="edit-modal">
+                                    <ContestEditForm
+                                        idContest={idContest}
+                                        onClose={() => setContestEdit(false)}
+                                        reloadContests={reloadContests}
+                                    />
+                                    <button
+                                        className="close-modal-button"
+                                        onClick={() => setContestEdit(false)}
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }
