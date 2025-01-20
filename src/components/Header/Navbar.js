@@ -40,7 +40,7 @@ const Navbar = () => {
               <span className="navbar-brand-text fw-7">James Thew</span>
             </Link>
             <div className="navbar-btns flex align-center">
-              <Link to="/reciperecipe" className="login-btn text-white fw-6 fs-16">
+              <Link to="/recipe" className="login-btn text-white fw-6 fs-16">
                 Recipe
               </Link>
               <Link to="/compecompe" className="login-btn text-white fw-6 fs-16">
