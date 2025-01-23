@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../../css/account/verifycode.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const VerifyCode = () => {
     const [verificationCode, setVerificationCode] = useState("");
@@ -14,6 +15,7 @@ const VerifyCode = () => {
         e.preventDefault();
         console.log(linkNavigate)
         try {
+            await axios.post(
             await axios.post(
                 "http://localhost:5231/api/Account/VerifyCode",
                 { verifyCode: verificationCode },
