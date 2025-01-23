@@ -31,9 +31,7 @@ const Login = () => {
             navigate("/management", { state: { isProfile: true, isContest: false, isRecipe: false, isTip: false } });
           } else {
             navigate("/")
-          } else {
-            navigate("/")
-          }
+          } 
 
         }
       })

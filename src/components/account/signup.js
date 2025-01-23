@@ -2,15 +2,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../../css/account/sign-up.css";
 import { useNavigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [cfPassword, setCfPassword] = useState("");
-    const [cfPassword, setCfPassword] = useState("");
     const [name, setName] = useState("");
-    const [paymentOption, setPaymentOption] = useState("monthly");
     const [paymentOption, setPaymentOption] = useState("monthly");
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState({});
