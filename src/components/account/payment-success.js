@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import "../../css/account/payment-success.css";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 
 const PaymentConfirmation = () => {
+    const navigate = useNavigate();
 
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
@@ -14,7 +15,10 @@ const PaymentConfirmation = () => {
                 const response = await axios.post("http://localhost:5231/api/SubscriptionPayment/capture-payment", {
                     orderId,
                 });
-                console.log("Payment captured successfully:", response);
+                console.log("Payment captured successfully:", response.data);
+                const { token, refreshToken } = response.data;
+                const inforToken = JSON.stringify({ token, refreshToken });
+                localStorage.setItem("inforToken", inforToken);
             } catch (error) {
                 console.log("Error payment: ", error);
             }
@@ -24,10 +28,12 @@ const PaymentConfirmation = () => {
             capturePayment(orderId);
         }
 
+
+
     }, [])
 
     const handleRedirect = () => {
-        window.location.href = "/";
+        navigate("/");
     };
 
     return (

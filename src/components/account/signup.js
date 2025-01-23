@@ -11,8 +11,7 @@ const SignUp = () => {
     const [paymentOption, setPaymentOption] = useState("monthly");
     const [message, setMessage] = useState("");
     const [errors, setErrors] = useState({});
-    const [amountPayment, setAmountPayment] = useState(10);
-    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const validateForm = () => {
@@ -39,31 +38,7 @@ const SignUp = () => {
         return errors;
     };
 
-    const calculateAmountPayment = () => {
-        return paymentOption === 'yearly' ? 100 : 10
-    }
-
-    const createPayment = async () => {
-        setLoading(true);
-        console.log(name + " " + calculateAmountPayment())
-        try {
-            const response = await axios.post("http://localhost:5231/api/SubscriptionPayment/create-payment", {
-                Amount: calculateAmountPayment(),
-                username: name
-            });
-
-            const approvalLink = response.data.approvalUrl;
-            console.log("abc" + approvalLink)
-
-            if (approvalLink) {
-                window.location.href = approvalLink;
-            }
-        } catch (error) {
-            console.error("Error creating PayPal payment", error);
-        } finally {
-            setLoading(false);
-        }
-    };
+   
 
     const handleSignUp = async (e) => {
         e.preventDefault();
@@ -73,7 +48,6 @@ const SignUp = () => {
             setErrors(formErrors);
             return;
         }
-
         try {
             e.preventDefault();
             await axios.post("http://localhost:5231/api/Account/RegisterCode", { email }, {
@@ -150,32 +124,7 @@ const SignUp = () => {
                     />
                     {errors.cfPassword && <p className="signup-error">{errors.cfPassword}</p>}
                 </div>
-                <div className="signup-form-group">
-                    <label>Payment Options:</label>
-                    <div className="signup-payment-options">
-                        <label className="signup-payment-options-label">
-                            <input
-                                type="radio"
-                                name="payment"
-                                value="monthly"
-                                checked={paymentOption === "monthly"}
-                                onChange={(e) => setPaymentOption(e.target.value)}
-                            />
-                            <span style={{ marginTop: "7px" }}>Monthly ($10)</span>
-                        </label>
-                        <label className="signup-payment-options-label">
-                            <input
-                                type="radio"
-                                name="payment"
-                                value="yearly"
-                                checked={paymentOption === "yearly"}
-                                onChange={(e) => setPaymentOption(e.target.value)}
-                            />
-                            <span style={{ marginTop: "7px" }}>Yearly ($100)</span>
-                        </label>
-                    </div>
-                    {errors.paymentOption && <p className="signup-error">{errors.paymentOption}</p>}
-                </div>
+
                 <button type="submit" className="signup-submit-button" onClick={handleSignUp}>
                     Sign Up
                 </button>

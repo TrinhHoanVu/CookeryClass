@@ -14,6 +14,7 @@ const Login = () => {
 
   async function handleLogin(e) {
     e.preventDefault();
+    
     await axios.post("http://localhost:5231/api/Account/login", { email, password })
       .then(res => {
         if (res.status === 200) {
@@ -23,9 +24,14 @@ const Login = () => {
           let tokenDecode = jwtDecode(res.data.token);
           console.log("tokenDecode: ", tokenDecode);
           setTokenInfor(tokenDecode)
-          if (tokenDecode.role === "SUPERADMIN" || tokenDecode.role === "ADMIN" || tokenDecode.role === "USER") {
+          const allowedRoles = ["SUPERADMIN", "ADMIN"];
+
+          if (allowedRoles.includes(tokenDecode.role)) {
             navigate("/management", { state: { isProfile: true, isContest: false, isRecipe: false, isTip: false } });
+          } else {
+            navigate("/")
           }
+
         }
       })
       .catch(err => {

@@ -68,20 +68,17 @@
     background-color: #d35400;
 }
 
-/* Error message styling */
 .signup-message {
     margin-top: 10px;
     color: #e74c3c;
 }
 
-/* Payment options container */
 .signup-payment-options {
     display: flex;
     flex-direction: row;
     gap: 50px;
 }
 
-/* Payment option label styling */
 .signup-payment-options-label {
     display: flex;
     align-items: center;
@@ -90,7 +87,6 @@
     cursor: pointer;
 }
 
-/* Custom radio button styling */
 .signup-payment-options input[type="radio"] {
     appearance: none;
     -webkit-appearance: none;
