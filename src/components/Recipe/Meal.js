@@ -45,7 +45,7 @@ const Meal = () => {
                         onKeyPress={searchRecipe}
                     />
                 </div>
-                <div className="container">
+                <div className="container-recipe">
                     {show ? <MealItem data={item} /> : "Not Found"}
                 </div>
                 <div className="indexContainer">
